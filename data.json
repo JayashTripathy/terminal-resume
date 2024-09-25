@@ -29,7 +29,7 @@
         "separateLinks": true,
         "visible": true,
         "id": "summary",
-        "content": "<p>I specialize in crafting scalable applications tailored to specific project needs. My proficiency spans the utilization of Websockets, Realtime Communications, and REST APIs, augmented by a deep understanding of frameworks like ReactJS and NextJS. This extensive expertise ensures the delivery of high-performance solutions that seamlessly address project requirements.</p>"
+        "content": "I specialize in crafting scalable applications tailored to specific project needs. My proficiency spans the utilization of Websockets, Realtime Communications, and REST APIs, augmented by a deep understanding of frameworks like ReactJS and NextJS. This extensive expertise ensures the delivery of high-performance solutions that seamlessly address project requirements."
       },
       "awards": {
         "name": "Awards",

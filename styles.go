@@ -6,6 +6,8 @@ var (
 	//hex codes
 	colors = map[string]string{
 		"primary": "#C77DFF",
+		"secondary": "#F8F8F8", // off white
+		"background": "#1B1B1B",
 	}
 
 	titleBoxStyle = func() lipgloss.Style {
@@ -15,6 +17,18 @@ var (
 	}()
 	titleStyle = func() lipgloss.Style {
 		return lipgloss.NewStyle().Bold((true)).Foreground(lipgloss.Color(colors["primary"]))
+	}()
+	contactInfoStyle = func() lipgloss.Style {
+		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["secondary"]))
+	}()
+	contactInfoItemStyle = func() lipgloss.Style {
+		border := lipgloss.Border{
+			Right: "|",
+		}
+		return lipgloss.NewStyle().
+						BorderStyle(border).
+						PaddingRight(1).
+						MarginRight(1)
 	}()
 
 	infoStyle = func() lipgloss.Style {

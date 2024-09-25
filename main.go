@@ -23,17 +23,27 @@ import (
 const useHighPerformanceRenderer = false
 
 type JsonData struct {
-	Basics struct {
-		Name     string `json:"name"`
-		Headline string `json:"headline"`
-		Email    string `json:"email"`
-		Phone    string `json:"phone"`
-		Location string `json:"location"`
-		Url      struct {
-			Label string `json:"label"`
-			Href  string `json:"href"`
-		}
-	}
+    Basics struct {
+        Name     string `json:"name"`
+        Headline string `json:"headline"`
+        Email    string `json:"email"`
+        Phone    string `json:"phone"`
+        Location string `json:"location"`
+        Url      struct {
+            Label string `json:"label"`
+            Href  string `json:"href"`
+        } `json:"url"`
+    } `json:"basics"`
+    Sections struct {
+        Summary struct {
+            Name          string `json:"name"`
+            Columns       int    `json:"columns"`
+            SeparateLinks bool   `json:"separateLinks"`
+            Visible       bool   `json:"visible"`
+            ID            string `json:"id"`
+            Content       string `json:"content"`
+        } `json:"summary"`
+    } `json:"sections"`
 }
 
 type model struct {
@@ -43,6 +53,7 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd {
+	
 	return nil
 }
 
@@ -51,6 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmd  tea.Cmd
 		cmds []tea.Cmd
 	)
+
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -72,13 +84,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport = viewport.New(msg.Width, msg.Height-verticalMarginHeight)
 			m.viewport.YPosition = headerHeight
 			m.viewport.HighPerformanceRendering = useHighPerformanceRenderer
-
-			var content string
-			for i:=0; i<1000; i++ {
-				content += fmt.Sprintf("Line %d\n", i)
-			}
-
-			m.viewport.SetContent(content)
+			m.viewport.SetContent(m.contentView())
 			m.ready = true
 
 			// This is only necessary for high performance rendering, which in
@@ -130,6 +136,25 @@ func (m model) footerView() string {
 	return lipgloss.JoinHorizontal(lipgloss.Center, line, info)
 }
 
+func (m  model) contentView() string {
+	summaryContent := m.content.Sections.Summary.Content
+	contactInfoItems := []string{m.content.Basics.Location, m.content.Basics.Email, m.content.Basics.Phone}
+
+	for i, item := range contactInfoItems {
+		if(i != len(contactInfoItems) - 1) {
+			contactInfoItems[i] = contactInfoItemStyle.Render(item)
+		} else {
+			contactInfoItems[i] = item
+		}
+	}
+
+
+	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
+
+	return contactInfoStyle.Render(contactInfo) + "\n\n" + summaryContent
+}
+
+
 func max(a, b int) int {
 	if a > b {
 		return a
@@ -153,8 +178,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Print the unmarshaled data
-	fmt.Printf("Parsed JSON Data: %+v\n", jsonData.Basics.Name)
+	
+
+
 
 	p := tea.NewProgram(
 		model{content: jsonData},

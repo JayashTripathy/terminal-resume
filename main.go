@@ -1,8 +1,5 @@
 package main
 
-// An example program demonstrating the pager component from the Bubbles
-// component library.
-
 import (
 	"encoding/json"
 	"fmt"
@@ -14,55 +11,70 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// You generally won't need this unless you're processing stuff with
-// complicated ANSI escape sequences. Turn it on if you notice flickering.
-//
-// Also keep in mind that high performance rendering only works for programs
-// that use the full size of the terminal. We're enabling that below with
-// tea.EnterAltScreen().
 const useHighPerformanceRenderer = false
 
-type JsonData struct {
-    Basics struct {
-        Name     string `json:"name"`
-        Headline string `json:"headline"`
-        Email    string `json:"email"`
-        Phone    string `json:"phone"`
-        Location string `json:"location"`
-        Url      struct {
-            Label string `json:"label"`
-            Href  string `json:"href"`
-        } `json:"url"`
-    } `json:"basics"`
-    Sections struct {
-        Summary struct {
-            Name          string `json:"name"`
-            Columns       int    `json:"columns"`
-            SeparateLinks bool   `json:"separateLinks"`
-            Visible       bool   `json:"visible"`
-            ID            string `json:"id"`
-            Content       string `json:"content"`
-        } `json:"summary"`
-    } `json:"sections"`
+type URL struct {
+	Label string `json:"label"`
+	Href  string `json:"href"`
 }
 
+type ExperienceItem struct {
+	ID       string `json:"id"`
+	Visible  bool   `json:"visible"`
+	Company  string `json:"company"`
+	Position string `json:"position"`
+	Location string `json:"location"`
+	Date     string `json:"date"`
+	Summary  string `json:"summary"`
+	Url      URL    `json:"url"`
+}
+
+type JsonData struct {
+	Basics struct {
+		Name     string `json:"name"`
+		Headline string `json:"headline"`
+		Email    string `json:"email"`
+		Phone    string `json:"phone"`
+		Location string `json:"location"`
+		Url      URL    `json:"url"`
+	} `json:"basics"`
+	Sections struct {
+		Summary struct {
+			Name          string `json:"name"`
+			Columns       int    `json:"columns"`
+			SeparateLinks bool   `json:"separateLinks"`
+			Visible       bool   `json:"visible"`
+			ID            string `json:"id"`
+			Content       string `json:"content"`
+		} `json:"summary"`
+		Experience struct {
+			Name          string           `json:"name"`
+			Columns       int              `json:"columns"`
+			SeparateLinks bool             `json:"separateLinks"`
+			Visible       bool             `json:"visible"`
+			ID            string           `json:"id"`
+			Items         []ExperienceItem `json:"items"`
+		} `json:"experience"`
+	} `json:"sections"`
+}
 type model struct {
 	content  JsonData
 	ready    bool
 	viewport viewport.Model
+	msg      tea.Msg
 }
 
 func (m model) Init() tea.Cmd {
-	
+
 	return nil
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	m.msg = msg
 	var (
 		cmd  tea.Cmd
 		cmds []tea.Cmd
 	)
-
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -136,30 +148,53 @@ func (m model) footerView() string {
 	return lipgloss.JoinHorizontal(lipgloss.Center, line, info)
 }
 
-func (m  model) contentView() string {
-	summaryContent := m.content.Sections.Summary.Content
+func (m model) AboutSection() string {
+	summaryContent := sectionContentStyle.Render(m.content.Sections.Summary.Content)
+	summaryTitle := sectionTitleStyle.Render(m.content.Sections.Summary.Name)
+	return lipgloss.JoinVertical(lipgloss.Left, summaryTitle, summaryContent)
+}
+
+func (m model) ExperienceItem(item ExperienceItem) string {
+	company := item.Company
+	position := item.Position
+	location := item.Location
+	date := item.Date
+	summary := item.Summary
+
+	titlePositionBlock := lipgloss.NewStyle().
+		Width(m.viewport.Width / 2).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
+	locationDateBlock := lipgloss.NewStyle().
+		Width(m.viewport.Width / 2).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
+	experienceItemHeader := lipgloss.JoinHorizontal(lipgloss.Center, titlePositionBlock, locationDateBlock)
+
+	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary)
+}
+
+func (m model) ExperienceSection() string {
+	title := sectionTitleStyle.Render(m.content.Sections.Experience.Name)
+	items := []string{}
+
+	for _, item := range m.content.Sections.Experience.Items {
+		items = append(items, m.ExperienceItem(item))
+	}
+
+	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Top, items...))
+}
+
+func (m model) contentView() string {
+
 	contactInfoItems := []string{m.content.Basics.Location, m.content.Basics.Email, m.content.Basics.Phone}
 
 	for i, item := range contactInfoItems {
-		if(i != len(contactInfoItems) - 1) {
+		if i != len(contactInfoItems)-1 {
 			contactInfoItems[i] = contactInfoItemStyle.Render(item)
 		} else {
 			contactInfoItems[i] = item
 		}
 	}
-
-
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
 
-	return contactInfoStyle.Render(contactInfo) + "\n\n" + summaryContent
-}
-
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+	return contactInfoStyle.Render(contactInfo) + "\n\n" + m.AboutSection() + "\n\n" + m.ExperienceSection()
 }
 
 func main() {
@@ -178,10 +213,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	
-
-
-
 	p := tea.NewProgram(
 		model{content: jsonData},
 		tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
@@ -189,7 +220,7 @@ func main() {
 	)
 
 	if _, err := p.Run(); err != nil {
-		fmt.Println("could not run program:", err) 
+		fmt.Println("could not run program:", err)
 		os.Exit(1)
 	}
 }

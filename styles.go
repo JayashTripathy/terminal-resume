@@ -7,7 +7,9 @@ var (
 	colors = map[string]string{
 		"primary": "#C77DFF",
 		"secondary": "#F8F8F8", // off white
-		"background": "#1B1B1B",
+		"foreground": "#F8F8F2", // white
+		"mutedForeground": "#BEBEBE",
+		
 	}
 
 	titleBoxStyle = func() lipgloss.Style {
@@ -18,6 +20,14 @@ var (
 	titleStyle = func() lipgloss.Style {
 		return lipgloss.NewStyle().Bold((true)).Foreground(lipgloss.Color(colors["primary"]))
 	}()
+
+	sectionTitleStyle = func () lipgloss.Style {
+		return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(colors["foreground"]))
+	}()
+	sectionContentStyle = func() lipgloss.Style {
+		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["mutedForeground"]))
+	}()
+
 	contactInfoStyle = func() lipgloss.Style {
 		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["secondary"]))
 	}()

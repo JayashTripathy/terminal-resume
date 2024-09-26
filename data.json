@@ -97,7 +97,7 @@
             "position": "Frontend Developer",
             "location": "Gurugram ∙ On Site",
             "date": "Feb 2024 - Present",
-            "summary": "<ul><li><p>Worked extensively with Websockets to stream data and videos in real time. Implemented client side api data caching, which enhanced data display by 60%</p></li><li><p>Made the app 80% easier to navigate by completely rewriting the routing logic and integrating data persistence</p></li><li><p>Created a data-heavy dashboard with a responsive layout and visually appealing live dynamic charts. <br></p></li></ul>",
+            "summary": "Worked extensively with Websockets to stream data and videos in real time. Implemented client side api data caching, which enhanced data display by 60% Made the app 80% easier to navigate by completely rewriting the routing logic and integrating data persistence Created a data-heavy dashboard with a responsive layout and visually appealing live dynamic charts.",
             "url": {
               "label": "",
               "href": ""
@@ -110,7 +110,7 @@
             "position": "React Developer",
             "location": "Vadodra ∙ Remote",
             "date": "June 2023 ∙ Sep 2023",
-            "summary": "<ul><li><p style=\"text-align: justify\">Worked on the frontend for Writeroo's web and mobile cross-platform applications, which were built with NextJS and Ionic, respectively.</p></li><li><p style=\"text-align: justify\">Developed essential functional pages like notifications and search, developed clean layouts, and integrated mobile-friendly gesture support, reuseable components following best practices, and clean architecture utilising tools like TypeScript, React, NextJS, React Query, React Router, and Jotai.</p></li></ul>",
+            "summary": "Worked on the frontend for Writeroo's web and mobile cross-platform applications, which were built with NextJS and Ionic, respectively. Developed essential functional pages like notifications and search, developed clean layouts, and integrated mobile-friendly gesture support, reuseable components following best practices, and clean architecture utilising tools like TypeScript, React, NextJS, React Query, React Router, and Jotai.",
             "url": {
               "label": "writeroo.net",
               "href": ""

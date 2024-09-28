@@ -18,11 +18,11 @@ var (
 		return lipgloss.NewStyle().BorderStyle(b).Padding(0, 1)
 	}()
 	titleStyle = func() lipgloss.Style {
-		return lipgloss.NewStyle().Bold((true)).Foreground(lipgloss.Color(colors["primary"]))
+		return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(colors["primary"]))
 	}()
 
 	sectionTitleStyle = func () lipgloss.Style {
-		return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(colors["foreground"]))
+		return lipgloss.NewStyle().Bold(true).PaddingBottom(1).Foreground(lipgloss.Color(colors["foreground"]))
 	}()
 	sectionContentStyle = func() lipgloss.Style {
 		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["mutedForeground"]))

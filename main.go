@@ -159,15 +159,15 @@ func (m model) ExperienceItem(item ExperienceItem) string {
 	position := item.Position
 	location := item.Location
 	date := item.Date
-	summary := item.Summary
+	summary := sectionContentStyle.PaddingTop(1).Render(item.Summary)
 
 	titlePositionBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
+		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
 	locationDateBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
-	experienceItemHeader := lipgloss.JoinHorizontal(lipgloss.Center, titlePositionBlock, locationDateBlock)
+		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
+	experienceItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
 
-	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary)
+	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary) + "\n"
 }
 
 func (m model) ExperienceSection() string {

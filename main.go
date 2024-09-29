@@ -59,6 +59,24 @@ type Experience struct {
 	Items         []ExperienceItem `json:"items"`
 }
 
+type SkillItem struct {
+    ID       string `json:"id"`
+    Visible  bool   `json:"visible"`
+    Name     string `json:"name"`
+    Level    int `json:"level"`
+    Keywords []string `json:"keywords"`
+}
+
+type Skill struct {
+    Name          string      `json:"name"`
+    Columns       int         `json:"columns"`
+    SeparateLinks bool        `json:"separateLinks"`
+    Visible       bool        `json:"visible"`
+    ID            string      `json:"id"`
+    Items         []SkillItem `json:"items"`
+}
+
+
 type JsonData struct {
 	Basics struct {
 		Name     string `json:"name"`
@@ -79,6 +97,7 @@ type JsonData struct {
 		} `json:"summary"`
 		Experience Experience `json:"experience"`
 		Education  Education  `json:"education"`
+		Skill      Skill      `json:"skills"`
 	} `json:"sections"`
 }
 type model struct {
@@ -99,7 +118,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmd  tea.Cmd
 		cmds []tea.Cmd
 	)
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
@@ -228,8 +246,34 @@ func (m model) EducationSection() string {
 	for _ , item := range m.content.Sections.Education.Items {
 		items = append(items, m.EducationItem(item))
 	}
-	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
+	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
 
+}
+
+func (m model) SkillSection() string {
+	title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
+	items :=  make([]string, 0, len(m.content.Sections.Skill.Items))
+	
+	itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / 5).Align(lipgloss.Left).PaddingBottom(1)
+
+
+	for _, item := range m.content.Sections.Skill.Items {
+		items = append(items, itemStyle.Render(item.Name))
+	}
+	
+	rows := (len(items) + 4) / 5
+	
+	formattedRows := make([]string, 0, rows)
+
+	for i := 0; i < len(items); i += 5 {
+		end := i + 5
+		if end > len(items) {
+			end = len(items)
+		}
+		formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
+	}
+
+	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinHorizontal(lipgloss.Left, formattedRows...) )
 }
 
 func (m model) contentView() string {
@@ -243,7 +287,11 @@ func (m model) contentView() string {
 		}
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
-	return contactInfoStyle.Render(contactInfo) + "\n\n" + m.AboutSection() + "\n\n" + m.ExperienceSection() + "\n\n" + m.EducationSection()
+	return contactInfoStyle.Render(contactInfo) + "\n\n" +
+								 m.AboutSection() + "\n\n" + 
+								 m.ExperienceSection() + "\n\n" +
+								 m.EducationSection() + "\n\n" +
+								 m.SkillSection() + "\n\n" 
 }
 
 func main() {

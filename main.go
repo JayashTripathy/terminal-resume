@@ -13,93 +13,6 @@ import (
 
 const useHighPerformanceRenderer = false
 
-type URL struct {
-	Label string `json:"label"`
-	Href  string `json:"href"`
-}
-
-type ExperienceItem struct {
-	ID       string `json:"id"`
-	Visible  bool   `json:"visible"`
-	Company  string `json:"company"`
-	Position string `json:"position"`
-	Location string `json:"location"`
-	Date     string `json:"date"`
-	Summary  string `json:"summary"`
-	Url      URL    `json:"url"`
-}
-
-type EducationItem struct {
-	ID          string `json:"id"`
-	Visible     bool   `json:"visible"`
-	Institution string `json:"institution"`
-	StudyType   string `json:"studyType"`
-	Area        string `json:"area"`
-	Score       string `json:"score"`
-	Date        string `json:"date"`
-	Summary     string `json:"summary"`
-	URL         URL    `json:"url"`
-}
-
-type Education struct {
-	Name          string          `json:"name"`
-	Columns       int             `json:"columns"`
-	SeparateLinks bool            `json:"separateLinks"`
-	Visible       bool            `json:"visible"`
-	ID            string          `json:"id"`
-	Items         []EducationItem `json:"items"`
-}
-
-type Experience struct {
-	Name          string           `json:"name"`
-	Columns       int              `json:"columns"`
-	SeparateLinks bool             `json:"separateLinks"`
-	Visible       bool             `json:"visible"`
-	ID            string           `json:"id"`
-	Items         []ExperienceItem `json:"items"`
-}
-
-type SkillItem struct {
-    ID       string `json:"id"`
-    Visible  bool   `json:"visible"`
-    Name     string `json:"name"`
-    Level    int `json:"level"`
-    Keywords []string `json:"keywords"`
-}
-
-type Skill struct {
-    Name          string      `json:"name"`
-    Columns       int         `json:"columns"`
-    SeparateLinks bool        `json:"separateLinks"`
-    Visible       bool        `json:"visible"`
-    ID            string      `json:"id"`
-    Items         []SkillItem `json:"items"`
-}
-
-
-type JsonData struct {
-	Basics struct {
-		Name     string `json:"name"`
-		Headline string `json:"headline"`
-		Email    string `json:"email"`
-		Phone    string `json:"phone"`
-		Location string `json:"location"`
-		Url      URL    `json:"url"`
-	} `json:"basics"`
-	Sections struct {
-		Summary struct {
-			Name          string `json:"name"`
-			Columns       int    `json:"columns"`
-			SeparateLinks bool   `json:"separateLinks"`
-			Visible       bool   `json:"visible"`
-			ID            string `json:"id"`
-			Content       string `json:"content"`
-		} `json:"summary"`
-		Experience Experience `json:"experience"`
-		Education  Education  `json:"education"`
-		Skill      Skill      `json:"skills"`
-	} `json:"sections"`
-}
 type model struct {
 	content  JsonData
 	ready    bool
@@ -243,7 +156,7 @@ func (m model) EducationSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Education.Name)
 	items := []string{}
 
-	for _ , item := range m.content.Sections.Education.Items {
+	for _, item := range m.content.Sections.Education.Items {
 		items = append(items, m.EducationItem(item))
 	}
 	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
@@ -252,17 +165,16 @@ func (m model) EducationSection() string {
 
 func (m model) SkillSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
-	items :=  make([]string, 0, len(m.content.Sections.Skill.Items))
-	
-	itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / 5).Align(lipgloss.Left).PaddingBottom(1)
+	items := make([]string, 0, len(m.content.Sections.Skill.Items))
 
+	itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / 5).Align(lipgloss.Left).PaddingBottom(1)
 
 	for _, item := range m.content.Sections.Skill.Items {
 		items = append(items, itemStyle.Render(item.Name))
 	}
-	
+
 	rows := (len(items) + 4) / 5
-	
+
 	formattedRows := make([]string, 0, rows)
 
 	for i := 0; i < len(items); i += 5 {
@@ -273,7 +185,7 @@ func (m model) SkillSection() string {
 		formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinHorizontal(lipgloss.Left, formattedRows...) )
+	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinHorizontal(lipgloss.Left, formattedRows...))
 }
 
 func (m model) contentView() string {
@@ -288,10 +200,10 @@ func (m model) contentView() string {
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
 	return contactInfoStyle.Render(contactInfo) + "\n\n" +
-								 m.AboutSection() + "\n\n" + 
-								 m.ExperienceSection() + "\n\n" +
-								 m.EducationSection() + "\n\n" +
-								 m.SkillSection() + "\n\n" 
+		m.AboutSection() + "\n\n" +
+		m.ExperienceSection() + "\n\n" +
+		m.EducationSection() + "\n\n" +
+		m.SkillSection() + "\n\n"
 }
 
 func main() {

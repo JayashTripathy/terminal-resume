@@ -29,7 +29,7 @@ type SkillItem struct {
 	ID       string   `json:"id"`
 	Visible  bool     `json:"visible"`
 	Name     string   `json:"name"`
-	Level    string   `json:"level"`
+	Level    int8     `json:"level"`
 	Keywords []string `json:"keywords"`
 }
 

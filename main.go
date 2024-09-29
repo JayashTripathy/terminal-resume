@@ -29,6 +29,36 @@ type ExperienceItem struct {
 	Url      URL    `json:"url"`
 }
 
+type EducationItem struct {
+	ID          string `json:"id"`
+	Visible     bool   `json:"visible"`
+	Institution string `json:"institution"`
+	StudyType   string `json:"studyType"`
+	Area        string `json:"area"`
+	Score       string `json:"score"`
+	Date        string `json:"date"`
+	Summary     string `json:"summary"`
+	URL         URL    `json:"url"`
+}
+
+type Education struct {
+	Name          string          `json:"name"`
+	Columns       int             `json:"columns"`
+	SeparateLinks bool            `json:"separateLinks"`
+	Visible       bool            `json:"visible"`
+	ID            string          `json:"id"`
+	Items         []EducationItem `json:"items"`
+}
+
+type Experience struct {
+	Name          string           `json:"name"`
+	Columns       int              `json:"columns"`
+	SeparateLinks bool             `json:"separateLinks"`
+	Visible       bool             `json:"visible"`
+	ID            string           `json:"id"`
+	Items         []ExperienceItem `json:"items"`
+}
+
 type JsonData struct {
 	Basics struct {
 		Name     string `json:"name"`
@@ -47,14 +77,8 @@ type JsonData struct {
 			ID            string `json:"id"`
 			Content       string `json:"content"`
 		} `json:"summary"`
-		Experience struct {
-			Name          string           `json:"name"`
-			Columns       int              `json:"columns"`
-			SeparateLinks bool             `json:"separateLinks"`
-			Visible       bool             `json:"visible"`
-			ID            string           `json:"id"`
-			Items         []ExperienceItem `json:"items"`
-		} `json:"experience"`
+		Experience Experience `json:"experience"`
+		Education  Education  `json:"education"`
 	} `json:"sections"`
 }
 type model struct {
@@ -170,6 +194,22 @@ func (m model) ExperienceItem(item ExperienceItem) string {
 	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary) + "\n"
 }
 
+func (m model) EducationItem(item EducationItem) string {
+	institution := item.Institution
+	studyType := item.StudyType
+	area := item.Area
+	date := item.Date
+	summary := sectionContentStyle.PaddingTop(1).Render(item.Summary)
+
+	titlePositionBlock := lipgloss.NewStyle().
+		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, institution, studyType))
+	locationDateBlock := lipgloss.NewStyle().
+		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, area, date))
+	educationItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
+
+	return lipgloss.JoinVertical(lipgloss.Top, educationItemHeader, summary) + "\n"
+}
+
 func (m model) ExperienceSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Experience.Name)
 	items := []string{}
@@ -181,10 +221,20 @@ func (m model) ExperienceSection() string {
 	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Top, items...))
 }
 
+func (m model) EducationSection() string {
+	title := sectionTitleStyle.Render(m.content.Sections.Education.Name)
+	items := []string{}
+
+	for _ , item := range m.content.Sections.Education.Items {
+		items = append(items, m.EducationItem(item))
+	}
+	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
+
+}
+
 func (m model) contentView() string {
 
 	contactInfoItems := []string{m.content.Basics.Location, m.content.Basics.Email, m.content.Basics.Phone}
-
 	for i, item := range contactInfoItems {
 		if i != len(contactInfoItems)-1 {
 			contactInfoItems[i] = contactInfoItemStyle.Render(item)
@@ -193,8 +243,7 @@ func (m model) contentView() string {
 		}
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
-
-	return contactInfoStyle.Render(contactInfo) + "\n\n" + m.AboutSection() + "\n\n" + m.ExperienceSection()
+	return contactInfoStyle.Render(contactInfo) + "\n\n" + m.AboutSection() + "\n\n" + m.ExperienceSection() + "\n\n" + m.EducationSection()
 }
 
 func main() {

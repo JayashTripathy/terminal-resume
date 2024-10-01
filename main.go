@@ -36,12 +36,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
 			return m, tea.Quit
 		}
-
+    
 	case tea.WindowSizeMsg:
 		headerHeight := lipgloss.Height(m.headerView())
 		footerHeight := lipgloss.Height(m.footerView())
 		verticalMarginHeight := headerHeight + footerHeight
-
+		
 		if !m.ready {
 			// Since this program is using the full size of the viewport we
 			// need to wait until we've received the window dimensions before
@@ -104,7 +104,7 @@ func (m model) footerView() string {
 }
 
 func (m model) AboutSection() string {
-	summaryContent := sectionContentStyle.Render(m.content.Sections.Summary.Content)
+	summaryContent := sectionContentStyle(m).Render(m.content.Sections.Summary.Content)
 	summaryTitle := sectionTitleStyle.Render(m.content.Sections.Summary.Name)
 	return lipgloss.JoinVertical(lipgloss.Left, summaryTitle, summaryContent)
 }
@@ -114,7 +114,7 @@ func (m model) ExperienceItem(item ExperienceItem) string {
 	position := item.Position
 	location := item.Location
 	date := item.Date
-	summary := sectionContentStyle.PaddingTop(1).Render(item.Summary)
+	summary := sectionContentStyle(m).PaddingTop(1).Render(item.Summary)
 
 	titlePositionBlock := lipgloss.NewStyle().
 		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
@@ -130,7 +130,7 @@ func (m model) EducationItem(item EducationItem) string {
 	studyType := item.StudyType
 	area := item.Area
 	date := item.Date
-	summary := sectionContentStyle.PaddingTop(1).Render(item.Summary)
+	summary := sectionContentStyle(m).PaddingTop(1).Render(item.Summary)
 
 	titlePositionBlock := lipgloss.NewStyle().
 		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, institution, studyType))
@@ -188,6 +188,29 @@ func (m model) SkillSection() string {
 	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinHorizontal(lipgloss.Left, formattedRows...))
 }
 
+func (m model) ProjectSection() string {
+	title := sectionTitleStyle.Render(m.content.Sections.Projects.Name)
+	projects := make([]string, 0, len(m.content.Sections.Projects.Items))
+
+	for _, project := range m.content.Sections.Projects.Items {
+		projectName := project.Name
+		projectSummary := project.Summary
+		projectUrl := project.URL
+		
+
+		projectNameStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(projectName)
+		projectUrlStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(projectUrl.Href)
+
+		projectHeader := lipgloss.JoinHorizontal(lipgloss.Left, projectNameStyle, projectUrlStyle)
+		projectDescriptionStyle := sectionContentStyle(m).PaddingTop(1).Render(projectSummary)
+
+		projects = append(projects, lipgloss.JoinVertical(lipgloss.Top, projectHeader, projectDescriptionStyle))
+	}
+
+
+	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, projects...)
+}
+
 func (m model) contentView() string {
 
 	contactInfoItems := []string{m.content.Basics.Location, m.content.Basics.Email, m.content.Basics.Phone}
@@ -199,11 +222,12 @@ func (m model) contentView() string {
 		}
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
-	return contactInfoStyle.Render(contactInfo) + "\n\n" +
+	return contactInfoStyle.Render(contactInfo) + "\n\n" + 
 		m.AboutSection() + "\n\n" +
 		m.ExperienceSection() + "\n\n" +
+		m.ProjectSection() + "\n\n" +
 		m.EducationSection() + "\n\n" +
-		m.SkillSection() + "\n\n"
+		m.SkillSection() + "\n\n"  
 }
 
 func main() {

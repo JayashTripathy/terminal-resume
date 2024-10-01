@@ -24,9 +24,10 @@ var (
 	sectionTitleStyle = func () lipgloss.Style {
 		return lipgloss.NewStyle().Bold(true).PaddingBottom(1).Foreground(lipgloss.Color(colors["foreground"]))
 	}()
-	sectionContentStyle = func() lipgloss.Style {
-		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["mutedForeground"]))
-	}()
+
+	sectionContentStyle = func(m model) lipgloss.Style {
+		return lipgloss.NewStyle().Width(m.viewport.Width).Foreground(lipgloss.Color(colors["mutedForeground"]))
+	}
 
 	contactInfoStyle = func() lipgloss.Style {
 		return lipgloss.NewStyle().Foreground(lipgloss.Color(colors["secondary"]))
@@ -46,7 +47,8 @@ var (
 		b.Left = "┤"
 		return titleBoxStyle.BorderStyle(b).Foreground(lipgloss.Color(colors["primary"]))
 	}() 
-	skillsItemLineStyle = func () lipgloss.Style {
+	
+	skillsContentItemLineStyle = func () lipgloss.Style {
 		return lipgloss.NewStyle().AlignVertical(lipgloss.Center)
 	}()
 )

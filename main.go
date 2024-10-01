@@ -164,28 +164,32 @@ func (m model) EducationSection() string {
 }
 
 func (m model) SkillSection() string {
-	title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
-	items := make([]string, 0, len(m.content.Sections.Skill.Items))
+    title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
+    items := make([]string, 0, len(m.content.Sections.Skill.Items))
 
-	itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / 5).Align(lipgloss.Left).PaddingBottom(1)
+    rowLen := 3
 
-	for _, item := range m.content.Sections.Skill.Items {
-		items = append(items, itemStyle.Render(item.Name))
-	}
+    // itemsContainerStyle := lipgloss.NewStyle()
+    itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / rowLen).Align(lipgloss.Left).PaddingBottom(1)
 
-	rows := (len(items) + 4) / 5
+    for _, item := range m.content.Sections.Skill.Items {
+        items = append(items, itemStyle.Render(item.Name))
+    }
 
-	formattedRows := make([]string, 0, rows)
+    // Calculate the number of rows
+    rows := (len(items) + rowLen - 1) / rowLen
 
-	for i := 0; i < len(items); i += 5 {
-		end := i + 5
-		if end > len(items) {
-			end = len(items)
-		}
-		formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
-	}
+    formattedRows := make([]string, 0, rows)
 
-	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinHorizontal(lipgloss.Left, formattedRows...))
+    for i := 0; i < len(items); i += rowLen {
+        end := i + rowLen
+        if end > len(items) {
+            end = len(items)
+        }
+        formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
+    }
+
+    return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Left, formattedRows...))
 }
 
 func (m model) ProjectSection() string {

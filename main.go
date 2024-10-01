@@ -167,22 +167,26 @@ func (m model) SkillSection() string {
     title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
     items := make([]string, 0, len(m.content.Sections.Skill.Items))
 
-    rowLen := 3
+    colLen := 5
+
+	if(m.content.Sections.Skill.Columns > 0) {
+		colLen = m.content.Sections.Skill.Columns
+	}
 
     // itemsContainerStyle := lipgloss.NewStyle()
-    itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / rowLen).Align(lipgloss.Left).PaddingBottom(1)
+    itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / colLen).Align(lipgloss.Left).PaddingBottom(1)
 
     for _, item := range m.content.Sections.Skill.Items {
         items = append(items, itemStyle.Render(item.Name))
     }
 
     // Calculate the number of rows
-    rows := (len(items) + rowLen - 1) / rowLen
+    cols := (len(items) + colLen - 1) / colLen
 
-    formattedRows := make([]string, 0, rows)
+    formattedRows := make([]string, 0, cols)
 
-    for i := 0; i < len(items); i += rowLen {
-        end := i + rowLen
+    for i := 0; i < len(items); i += colLen {
+        end := i + colLen
         if end > len(items) {
             end = len(items)
         }

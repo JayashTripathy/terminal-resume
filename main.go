@@ -109,7 +109,7 @@ func (m model) AboutSection() string {
 	return lipgloss.JoinVertical(lipgloss.Left, summaryTitle, summaryContent)
 }
 
-func (m model) ExperienceItem(item ExperienceItem) string {
+func (m model) ExperienceItem(item ExperienceItem, isLast bool) string {
 	company := item.Company
 	position := item.Position
 	location := item.Location
@@ -122,10 +122,17 @@ func (m model) ExperienceItem(item ExperienceItem) string {
 		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
 	experienceItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
 
-	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary) + "\n"
+	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary) + func() string {
+		if isLast {
+			return ""
+		}
+		return "\n"
+	}()
 }
 
-func (m model) EducationItem(item EducationItem) string {
+
+
+func (m model) EducationItem(item EducationItem , isLast bool) string {
 	institution := item.Institution
 	studyType := item.StudyType
 	area := item.Area
@@ -138,15 +145,20 @@ func (m model) EducationItem(item EducationItem) string {
 		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, area, date))
 	educationItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
 
-	return lipgloss.JoinVertical(lipgloss.Top, educationItemHeader, summary) + "\n"
+	return lipgloss.JoinVertical(lipgloss.Top, educationItemHeader, summary) + func() string {
+		if isLast {
+			return ""
+		}
+		return "\n"
+	}()
 }
 
 func (m model) ExperienceSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Experience.Name)
 	items := []string{}
 
-	for _, item := range m.content.Sections.Experience.Items {
-		items = append(items, m.ExperienceItem(item))
+	for index, item := range m.content.Sections.Experience.Items {
+		items = append(items, m.ExperienceItem(item, index == len(m.content.Sections.Experience.Items)-1))
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Top, items...))
@@ -156,8 +168,8 @@ func (m model) EducationSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Education.Name)
 	items := []string{}
 
-	for _, item := range m.content.Sections.Education.Items {
-		items = append(items, m.EducationItem(item))
+	for index , item := range m.content.Sections.Education.Items {
+		items = append(items, m.EducationItem(item, index == len(m.content.Sections.Education.Items)-1))
 	}
 	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
 
@@ -200,7 +212,7 @@ func (m model) ProjectSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Projects.Name)
 	projects := make([]string, 0, len(m.content.Sections.Projects.Items))
 
-	for _, project := range m.content.Sections.Projects.Items {
+	for index, project := range m.content.Sections.Projects.Items {
 		projectName := project.Name
 		projectSummary := project.Summary
 		projectUrl := project.URL
@@ -208,11 +220,18 @@ func (m model) ProjectSection() string {
 
 		projectNameStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(projectName)
 		projectUrlStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(projectUrl.Href)
+		
 
 		projectHeader := lipgloss.JoinHorizontal(lipgloss.Left, projectNameStyle, projectUrlStyle)
 		projectDescriptionStyle := sectionContentStyle(m).PaddingTop(1).Render(projectSummary)
 
-		projects = append(projects, lipgloss.JoinVertical(lipgloss.Top, projectHeader, projectDescriptionStyle))
+		projectItem :=  lipgloss.JoinVertical(lipgloss.Top, projectHeader, projectDescriptionStyle)
+
+		isLast := index == len(m.content.Sections.Projects.Items)-1
+		projects = append(projects, projectItem)
+		if !isLast {
+			projects = append(projects, "\n")
+		}
 	}
 
 
@@ -231,11 +250,11 @@ func (m model) contentView() string {
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
 	return contactInfoStyle.Render(contactInfo) + "\n\n" + 
-		m.AboutSection() + "\n\n" +
-		m.ExperienceSection() + "\n\n" +
-		m.ProjectSection() + "\n\n" +
-		m.EducationSection() + "\n\n" +
-		m.SkillSection() + "\n\n"  
+		m.AboutSection() + "\n\n\n" +
+		m.ExperienceSection() + "\n\n\n" +
+		m.ProjectSection() + "\n\n\n" +
+		m.EducationSection() + "\n\n\n" +
+		m.SkillSection() + "\n\n\n"  
 }
 
 func main() {

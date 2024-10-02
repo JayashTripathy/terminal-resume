@@ -197,7 +197,7 @@
             "name": "MeshHawk",
             "description": "winner project of kavach'23 ",
             "date": "",
-            "summary": "<p>Mesh-Hawk is a versatile, lightweight, and IoT-enabled tool designed for the detection and analysis of mesh networks. It empowers users to remotely scan specific areas, gather network details, and generate graphical maps of network components based on the collected evidence. Through its multi-stage operation, Mesh-Hawk provides invaluable insights into potential mesh networks and their attributes.</p>",
+            "summary": "Mesh-Hawk is a versatile, lightweight, and IoT-enabled tool designed for the detection and analysis of mesh networks. It empowers users to remotely scan specific areas, gather network details, and generate graphical maps of network components based on the collected evidence. Through its multi-stage operation, Mesh-Hawk provides invaluable insights into potential mesh networks and their attributes.",
             "keywords": [],
             "url": {
               "label": "opinhacks.co/",
@@ -210,7 +210,7 @@
             "name": "WiseFAQ",
             "description": "",
             "date": "",
-            "summary": "<p>An no code AI-enabled FAQ page generator for any product, service, side project, or event that is completely customizable. Users can use it to create multiple FAQ pages, each with a different AI chatbot that is trained on the data provided when creating the page. I used Typescript, NextJS, and Supabase to store all the vector embedding and langchain for creating a custom AI agent.</p>",
+            "summary": "An no code AI-enabled FAQ page generator for any product, service, side project, or event that is completely customizable. Users can use it to create multiple FAQ pages, each with a different AI chatbot that is trained on the data provided when creating the page. I used Typescript, NextJS, and Supabase to store all the vector embedding and langchain for creating a custom AI agent.",
             "keywords": [],
             "url": {
               "label": "wisefaq.vercel.app",

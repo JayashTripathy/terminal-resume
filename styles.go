@@ -48,7 +48,4 @@ var (
 		return titleBoxStyle.BorderStyle(b).Foreground(lipgloss.Color(colors["primary"]))
 	}() 
 	
-	skillsContentItemLineStyle = func () lipgloss.Style {
-		return lipgloss.NewStyle().AlignVertical(lipgloss.Center)
-	}()
 )

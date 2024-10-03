@@ -1,15 +1,32 @@
 package main
 
 import (
+	"context"
+	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net"
 	"os"
+	"os/signal"
 	"strings"
- 
-        _ "embed"
+	"syscall"
+	"time"
+
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
+	"github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/wish"
+	"github.com/charmbracelet/wish/activeterm"
+	"github.com/charmbracelet/wish/bubbletea"
+	"github.com/charmbracelet/wish/logging"
+)
+
+const (
+	host = "0.0.0.0" // Listen on all interfaces
+	port = "22"      // Default SSH port
 )
 
 const useHighPerformanceRenderer = false
@@ -18,6 +35,7 @@ type model struct {
 	content  JsonData
 	ready    bool
 	viewport viewport.Model
+	sess     ssh.Session
 	msg      tea.Msg
 }
 
@@ -37,12 +55,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
 			return m, tea.Quit
 		}
-    
+
 	case tea.WindowSizeMsg:
 		headerHeight := lipgloss.Height(m.headerView())
 		footerHeight := lipgloss.Height(m.footerView())
 		verticalMarginHeight := headerHeight + footerHeight
-		
+
 		if !m.ready {
 			// Since this program is using the full size of the viewport we
 			// need to wait until we've received the window dimensions before
@@ -131,9 +149,7 @@ func (m model) ExperienceItem(item ExperienceItem, isLast bool) string {
 	}()
 }
 
-
-
-func (m model) EducationItem(item EducationItem , isLast bool) string {
+func (m model) EducationItem(item EducationItem, isLast bool) string {
 	institution := item.Institution
 	studyType := item.StudyType
 	area := item.Area
@@ -169,7 +185,7 @@ func (m model) EducationSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Education.Name)
 	items := []string{}
 
-	for index , item := range m.content.Sections.Education.Items {
+	for index, item := range m.content.Sections.Education.Items {
 		items = append(items, m.EducationItem(item, index == len(m.content.Sections.Education.Items)-1))
 	}
 	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, items...)
@@ -177,36 +193,36 @@ func (m model) EducationSection() string {
 }
 
 func (m model) SkillSection() string {
-    title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
-    items := make([]string, 0, len(m.content.Sections.Skill.Items))
+	title := sectionTitleStyle.Render(m.content.Sections.Skill.Name)
+	items := make([]string, 0, len(m.content.Sections.Skill.Items))
 
-    colLen := 5
+	colLen := 5
 
-	if(m.content.Sections.Skill.Columns > 0) {
+	if m.content.Sections.Skill.Columns > 0 {
 		colLen = m.content.Sections.Skill.Columns
 	}
 
-    // itemsContainerStyle := lipgloss.NewStyle()
-    itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / colLen).Align(lipgloss.Left).PaddingBottom(1)
+	// itemsContainerStyle := lipgloss.NewStyle()
+	itemStyle := lipgloss.NewStyle().Width(m.viewport.Width / colLen).Align(lipgloss.Left).PaddingBottom(1)
 
-    for _, item := range m.content.Sections.Skill.Items {
-        items = append(items, itemStyle.Render(item.Name))
-    }
+	for _, item := range m.content.Sections.Skill.Items {
+		items = append(items, itemStyle.Render(item.Name))
+	}
 
-    // Calculate the number of rows
-    cols := (len(items) + colLen - 1) / colLen
+	// Calculate the number of rows
+	cols := (len(items) + colLen - 1) / colLen
 
-    formattedRows := make([]string, 0, cols)
+	formattedRows := make([]string, 0, cols)
 
-    for i := 0; i < len(items); i += colLen {
-        end := i + colLen
-        if end > len(items) {
-            end = len(items)
-        }
-        formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
-    }
+	for i := 0; i < len(items); i += colLen {
+		end := i + colLen
+		if end > len(items) {
+			end = len(items)
+		}
+		formattedRows = append(formattedRows, lipgloss.JoinHorizontal(lipgloss.Top, items[i:end]...))
+	}
 
-    return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Left, formattedRows...))
+	return lipgloss.JoinVertical(lipgloss.Top, title, lipgloss.JoinVertical(lipgloss.Left, formattedRows...))
 }
 
 func (m model) ProjectSection() string {
@@ -217,16 +233,14 @@ func (m model) ProjectSection() string {
 		projectName := project.Name
 		projectSummary := project.Summary
 		projectUrl := project.URL
-		
 
 		projectNameStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(projectName)
 		projectUrlStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(projectUrl.Href)
-		
 
 		projectHeader := lipgloss.JoinHorizontal(lipgloss.Left, projectNameStyle, projectUrlStyle)
 		projectDescriptionStyle := sectionContentStyle(m).PaddingTop(1).Render(projectSummary)
 
-		projectItem :=  lipgloss.JoinVertical(lipgloss.Top, projectHeader, projectDescriptionStyle)
+		projectItem := lipgloss.JoinVertical(lipgloss.Top, projectHeader, projectDescriptionStyle)
 
 		isLast := index == len(m.content.Sections.Projects.Items)-1
 		projects = append(projects, projectItem)
@@ -234,7 +248,6 @@ func (m model) ProjectSection() string {
 			projects = append(projects, "\n")
 		}
 	}
-
 
 	return lipgloss.JoinVertical(lipgloss.Top, title) + "\n" + lipgloss.JoinVertical(lipgloss.Top, projects...)
 }
@@ -250,18 +263,25 @@ func (m model) contentView() string {
 		}
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
-	return contactInfoStyle.Render(contactInfo) + "\n\n" + 
+	return contactInfoStyle.Render(contactInfo) + "\n\n" +
 		m.AboutSection() + "\n\n\n" +
 		m.ExperienceSection() + "\n\n\n" +
 		m.ProjectSection() + "\n\n\n" +
 		m.EducationSection() + "\n\n\n" +
-		m.SkillSection() + "\n\n\n"  
+		m.SkillSection() + "\n\n\n"
 }
-	//go:embed data.json
-    var jsonContent []byte
-func main() {
 
+//go:embed data.json
+var jsonContent []byte
 
+func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
+	// Create a lipgloss.Renderer for the session
+	// renderer := bubbletea.MakeRenderer(s)
+	// Set up the model with the current session and styles.
+	// We'll use the session to call wish.Command, which makes it compatible
+	// with tea.Command.
+
+	    
 	var jsonData JsonData
 	err := json.Unmarshal(jsonContent, &jsonData)
 
@@ -270,14 +290,71 @@ func main() {
 		os.Exit(1)
 	}
 
-	p := tea.NewProgram(
-		model{content: jsonData},
-		tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
-		tea.WithMouseCellMotion(), // turn on mouse support so we can track the mouse wheel
-	)
-
-	if _, err := p.Run(); err != nil {
-		fmt.Println("could not run program:", err)
-		os.Exit(1)
+	m := model{
+		sess: s,
+		content: jsonData,
 	}
+	return m, []tea.ProgramOption{tea.WithAltScreen()}
+}
+
+func main() {
+
+	s, err := wish.NewServer(
+		wish.WithAddress(net.JoinHostPort(host, port)),
+
+		// Allocate a pty.
+		// This creates a pseudoconsole on windows, compatibility is limited in
+		// that case, see the open issues for more details.
+		ssh.AllocatePty(),
+		wish.WithMiddleware(
+			// run our Bubble Tea handler
+			bubbletea.Middleware(teaHandler),
+
+			// ensure the user has requested a tty
+			activeterm.Middleware(),
+			logging.Middleware(),
+		),
+	)
+   
+	if err != nil {
+		log.Error("Could not start server", "error", err)
+	}
+
+	done := make(chan os.Signal	, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	log.Info("Starting SSH server", "host", host, "port", port)
+
+	go func() {
+		if err = s.ListenAndServe(); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+			log.Error("Could not start server", "error", err)
+			done <- nil
+		}
+	}()
+
+	<-done
+	log.Info("Stopping SSH server")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer func() { cancel() }()
+	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+		log.Error("Could not stop server", "error", err)
+	}
+    
+	// var jsonData JsonData
+	// err := json.Unmarshal(jsonContent, &jsonData)
+
+	// if err != nil {
+	// 	fmt.Println("error unmarshaling JSON:", err)
+	// 	os.Exit(1)
+	// }
+
+	// p := tea.NewProgram(
+	// 	model{content: jsonData},
+	// 	tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
+	// 	tea.WithMouseCellMotion(), // turn on mouse support so we can track the mouse wheel
+	// )
+
+	// if _, err := p.Run(); err != nil {
+	// 	fmt.Println("could not run program:", err)
+	// 	os.Exit(1)
+	// }
 }

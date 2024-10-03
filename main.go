@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
+ 
+        _ "embed"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -256,17 +257,13 @@ func (m model) contentView() string {
 		m.EducationSection() + "\n\n\n" +
 		m.SkillSection() + "\n\n\n"  
 }
-
+	//go:embed data.json
+    var jsonContent []byte
 func main() {
-	// Load some text for our viewport
-	jsonContent, err := os.ReadFile("data.json")
-	if err != nil {
-		fmt.Println("could not load file:", err)
-		os.Exit(1)
-	}
+
 
 	var jsonData JsonData
-	err = json.Unmarshal(jsonContent, &jsonData)
+	err := json.Unmarshal(jsonContent, &jsonData)
 
 	if err != nil {
 		fmt.Println("error unmarshaling JSON:", err)

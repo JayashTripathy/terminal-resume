@@ -26,7 +26,7 @@ var (
 	}()
 
 	sectionContentStyle = func(m model) lipgloss.Style {
-		return lipgloss.NewStyle().Width(m.viewport.Width).Foreground(lipgloss.Color(colors["mutedForeground"]))
+		return lipgloss.NewStyle().Width(m.viewport.Width - bodyPadding).Foreground(lipgloss.Color(colors["mutedForeground"]))
 	}
 
 	contactInfoStyle = func() lipgloss.Style {

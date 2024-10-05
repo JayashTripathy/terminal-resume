@@ -26,7 +26,11 @@ import (
 
 const (
 	host = "0.0.0.0" // Listen on all interfaces
-	port = "23234"      // Default SSH port
+	port = "23234"   // Default SSH port
+
+	// global style variables
+
+	bodyPadding = 1
 )
 
 const useHighPerformanceRenderer = false
@@ -134,11 +138,12 @@ func (m model) ExperienceItem(item ExperienceItem, isLast bool) string {
 	location := item.Location
 	date := item.Date
 	summary := sectionContentStyle(m).PaddingTop(1).Render(item.Summary)
+	halfSafeAreaWidth := (m.viewport.Width / 2) - bodyPadding
 
 	titlePositionBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
+		Width(halfSafeAreaWidth).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, company, position))
 	locationDateBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
+		Width(halfSafeAreaWidth).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, location, date))
 	experienceItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
 
 	return lipgloss.JoinVertical(lipgloss.Top, experienceItemHeader, summary) + func() string {
@@ -155,11 +160,14 @@ func (m model) EducationItem(item EducationItem, isLast bool) string {
 	area := item.Area
 	date := item.Date
 	summary := sectionContentStyle(m).PaddingTop(1).Render(item.Summary)
+	halfSafeAreaWidth := (m.viewport.Width / 2) - bodyPadding
+	
+
 
 	titlePositionBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, institution, studyType))
+		Width(halfSafeAreaWidth).Align(lipgloss.Left).Render(lipgloss.JoinVertical(lipgloss.Left, institution, studyType))
 	locationDateBlock := lipgloss.NewStyle().
-		Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, area, date))
+		Width(halfSafeAreaWidth).Align(lipgloss.Right).Render(lipgloss.JoinVertical(lipgloss.Right, area, date))
 	educationItemHeader := lipgloss.JoinHorizontal(lipgloss.Left, titlePositionBlock, locationDateBlock)
 
 	return lipgloss.JoinVertical(lipgloss.Top, educationItemHeader, summary) + func() string {
@@ -228,14 +236,16 @@ func (m model) SkillSection() string {
 func (m model) ProjectSection() string {
 	title := sectionTitleStyle.Render(m.content.Sections.Projects.Name)
 	projects := make([]string, 0, len(m.content.Sections.Projects.Items))
+	halfSafeAreaWidth := (m.viewport.Width / 2) - bodyPadding
+
 
 	for index, project := range m.content.Sections.Projects.Items {
 		projectName := project.Name
 		projectSummary := project.Summary
 		projectUrl := project.URL
 
-		projectNameStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Left).Render(projectName)
-		projectUrlStyle := lipgloss.NewStyle().Width(m.viewport.Width / 2).Align(lipgloss.Right).Render(projectUrl.Href)
+		projectNameStyle := lipgloss.NewStyle().Width(halfSafeAreaWidth).Align(lipgloss.Left).Render(projectName)
+		projectUrlStyle := lipgloss.NewStyle().Width(halfSafeAreaWidth).Align(lipgloss.Right).Render(projectUrl.Href)
 
 		projectHeader := lipgloss.JoinHorizontal(lipgloss.Left, projectNameStyle, projectUrlStyle)
 		projectDescriptionStyle := sectionContentStyle(m).PaddingTop(1).Render(projectSummary)
@@ -263,25 +273,19 @@ func (m model) contentView() string {
 		}
 	}
 	contactInfo := lipgloss.JoinHorizontal(lipgloss.Center, contactInfoItems...)
-	return contactInfoStyle.Render(contactInfo) + "\n\n" +
-		m.AboutSection() + "\n\n\n" +
-		m.ExperienceSection() + "\n\n\n" +
-		m.ProjectSection() + "\n\n\n" +
-		m.EducationSection() + "\n\n\n" +
-		m.SkillSection() + "\n\n\n"
+	return lipgloss.NewStyle().Padding(bodyPadding).Render(lipgloss.JoinHorizontal(lipgloss.Left, contactInfoStyle.Render(contactInfo)+"\n\n"+
+		m.AboutSection()+"\n\n\n"+
+		m.ExperienceSection()+"\n\n\n"+
+		m.ProjectSection()+"\n\n\n"+
+		m.EducationSection()+"\n\n\n"+
+		m.SkillSection()+"\n\n\n"))
 }
 
 //go:embed data.json
 var jsonContent []byte
 
 func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
-	// Create a lipgloss.Renderer for the session
-	// renderer := bubbletea.MakeRenderer(s)
-	// Set up the model with the current session and styles.
-	// We'll use the session to call wish.Command, which makes it compatible
-	// with tea.Command.
 
-	    
 	var jsonData JsonData
 	err := json.Unmarshal(jsonContent, &jsonData)
 
@@ -291,7 +295,7 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	}
 
 	m := model{
-		sess: s,
+		sess:    s,
 		content: jsonData,
 	}
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
@@ -315,12 +319,12 @@ func main() {
 			logging.Middleware(),
 		),
 	)
-   
+
 	if err != nil {
 		log.Error("Could not start server", "error", err)
 	}
 
-	done := make(chan os.Signal	, 1)
+	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	log.Info("Starting SSH server", "host", host, "port", port)
 
@@ -338,23 +342,5 @@ func main() {
 	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
 		log.Error("Could not stop server", "error", err)
 	}
-    
-	// var jsonData JsonData
-	// err := json.Unmarshal(jsonContent, &jsonData)
 
-	// if err != nil {
-	// 	fmt.Println("error unmarshaling JSON:", err)
-	// 	os.Exit(1)
-	// }
-
-	// p := tea.NewProgram(
-	// 	model{content: jsonData},
-	// 	tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
-	// 	tea.WithMouseCellMotion(), // turn on mouse support so we can track the mouse wheel
-	// )
-
-	// if _, err := p.Run(); err != nil {
-	// 	fmt.Println("could not run program:", err)
-	// 	os.Exit(1)
-	// }
 }

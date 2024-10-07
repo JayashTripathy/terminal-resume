@@ -319,7 +319,7 @@ func main() {
 			logging.Middleware(),
 
 		),
-		ssh.HostKeyFile(""),
+		ssh.HostKeyFile(".ssh/id_ed25519"),
 		
 	)
 

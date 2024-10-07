@@ -26,7 +26,7 @@ import (
 
 const (
 	host = "0.0.0.0" // Listen on all interfaces
-	port = "23234"   // Default SSH port
+	port = "22"   // Default SSH port
 
 	// global style variables
 

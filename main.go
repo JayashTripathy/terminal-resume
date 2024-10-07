@@ -305,7 +305,7 @@ func main() {
 
 	s, err := wish.NewServer(
 		wish.WithAddress(net.JoinHostPort(host, port)),
-		wish.WithHostKeyPath("~/.ssh/id_ed25519"),
+		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		// Allocate a pty.
 		// This creates a pseudoconsole on windows, compatibility is limited in
 		// that case, see the open issues for more details.

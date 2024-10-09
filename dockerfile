@@ -19,6 +19,11 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
     
 
+# Create SSH configuration directory and file
+RUN mkdir -p /root/.ssh && \
+    echo "Host localhost" >> /root/.ssh/config && \
+    echo "    UserKnownHostsFile /dev/null" >> /root/.ssh/config
+
 # Configure SSH
 RUN echo "HostKeyAlgorithms +ssh-rsa" >> /etc/ssh/sshd_config
 RUN echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/sshd_config

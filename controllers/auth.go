@@ -15,7 +15,6 @@ var jwtKey = []byte("my_secret")
 
 var Users = map[string]string{}
 
-// func 
 
 func Signup(w http.ResponseWriter, r *http.Request) error {
 	var user models.User

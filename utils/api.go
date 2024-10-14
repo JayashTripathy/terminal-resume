@@ -3,6 +3,8 @@ package utils
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func WriteJSON(w http.ResponseWriter, status int, data any) error {
@@ -18,7 +20,11 @@ type ApiError struct {
 	Error string
 }
 
-func 	MakeHTTPHandler(fn ApiFunc) http.HandlerFunc {
+type ApiResponse struct {
+	Message string
+}
+
+func MakeHTTPHandler(fn ApiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := fn(w, r); err != nil {
 			apiErr := ApiError{
@@ -29,4 +35,8 @@ func 	MakeHTTPHandler(fn ApiFunc) http.HandlerFunc {
 		}
 
 	}
+}
+
+func HttpHandlerFunc(pattern string, fn ApiFunc, router *mux.Router, ) {
+	router.HandleFunc(pattern, MakeHTTPHandler(fn))
 }

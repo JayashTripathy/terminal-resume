@@ -31,6 +31,7 @@ func InitDB(cfg Config) {
 		panic(err)
 	}
 
-	fmt.Println("Migration Completed")
 
+	fmt.Println("Migration Completed")
+	DB = db
 }

@@ -9,10 +9,6 @@ import (
 	"terminal-resume.jayash.space/utils"
 )
 
-
-
-
-
 type APIServer struct {
 	listenAddr string
 }

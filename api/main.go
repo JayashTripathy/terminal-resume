@@ -25,15 +25,13 @@ func NewApiServer(listenAddr string) *APIServer {
 
 func (s *APIServer) Start() {
 	router := mux.NewRouter()
-	router.HandleFunc("/account", utils.MakeHTTPHandler(s.handleAccount))
-	router.HandleFunc("/login", utils.MakeHTTPHandler(controllers.Login))
+
 	utils.HttpHandlerFunc("/signup", controllers.Signup, router)
+	utils.HttpHandlerFunc("/login", controllers.Login, router)
 	
 	fmt.Println("Starting server on", s.listenAddr)
 
 	http.ListenAndServe(s.listenAddr, router)
 }
 
-func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
+

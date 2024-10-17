@@ -5,10 +5,10 @@ import "github.com/charmbracelet/lipgloss"
 var (
 	//hex codes
 	colors = map[string]string{
-		"primary": "#C77DFF",
-		"secondary": "#F8F8F8", // off white
-		"foreground": "#F8F8F2", // white
-		"mutedForeground": "#BEBEBE",
+		"primary": "198",
+		"secondary": "255", 
+		"foreground": "231", 
+		"mutedForeground": "249",
 		
 	}
 

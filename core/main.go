@@ -301,6 +301,24 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
 
+func withCustomArgs(next ssh.Handler) ssh.Handler {
+    return func(s ssh.Session) {
+        // Print custom arguments
+        fmt.Printf("Custom args: %v\n", s.Command())
+
+        // Parse custom arguments
+        args := s.Command()
+        for _, arg := range args {
+            if strings.HasPrefix(arg, "-oUserID=") {
+                userID := strings.TrimPrefix(arg, "-oUserID=")
+                fmt.Printf("UserID: %s\n", userID)
+            }
+        }
+
+        next(s)
+    }
+}
+
 func main() {
 
 	s, err := wish.NewServer(
@@ -313,14 +331,13 @@ func main() {
 		wish.WithMiddleware(
 			// run our Bubble Tea handler
 			bubbletea.Middleware(teaHandler),
-
 			// ensure the user has requested a tty
 			activeterm.Middleware(),
 			logging.Middleware(),
+			withCustomArgs,
 
 		),
 		ssh.HostKeyFile(".ssh/id_ed25519"),
-		
 	)
 
 	if err != nil {

@@ -41,6 +41,7 @@ type model struct {
 	viewport viewport.Model
 	sess     ssh.Session
 	msg      tea.Msg
+	user string
 }
 
 func (m model) Init() tea.Cmd {
@@ -107,7 +108,18 @@ func (m model) View() string {
 	if !m.ready {
 		return "\n  Initializing..."
 	}
-	return fmt.Sprintf("%s\n%s\n%s", m.headerView(), m.viewport.View(), m.footerView())
+	fmt.Printf("user %+v\n", m.user)
+
+	var view string
+
+	if(m.user != ""){
+		view = fmt.Sprintf("%s\n%s\n%s", m.headerView(), m.viewport.View(), m.footerView())
+	}else{
+		view = "No user provided"
+	}
+	
+
+	return view
 }
 
 func (m model) headerView() string {
@@ -288,36 +300,31 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 
 	var jsonData JsonData
 	err := json.Unmarshal(jsonContent, &jsonData)
+	var username string
 
 	if err != nil {
 		fmt.Println("error unmarshaling JSON:", err)
 		os.Exit(1)
 	}
 
+	err = extractUsername(s, &username)
+
+	if err != nil {
+		log.Warn(err)
+	}
+
+	log.Info("Username is " + username)
+
+
 	m := model{
 		sess:    s,
 		content: jsonData,
+		user: username,
 	}
 	return m, []tea.ProgramOption{tea.WithAltScreen()}
 }
 
-func withCustomArgs(next ssh.Handler) ssh.Handler {
-    return func(s ssh.Session) {
-        // Print custom arguments
-        fmt.Printf("Custom args: %v\n", s.Command())
 
-        // Parse custom arguments
-        args := s.Command()
-        for _, arg := range args {
-            if strings.HasPrefix(arg, "-oUserID=") {
-                userID := strings.TrimPrefix(arg, "-oUserID=")
-                fmt.Printf("UserID: %s\n", userID)
-            }
-        }
-
-        next(s)
-    }
-}
 
 func main() {
 
@@ -334,7 +341,6 @@ func main() {
 			// ensure the user has requested a tty
 			activeterm.Middleware(),
 			logging.Middleware(),
-			withCustomArgs,
 
 		),
 		ssh.HostKeyFile(".ssh/id_ed25519"),

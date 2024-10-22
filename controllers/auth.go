@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/dgrijalva/jwt-go"
 	"terminal-resume.jayash.space/models"
 	"terminal-resume.jayash.space/utils"
@@ -58,6 +58,7 @@ func Signup(w http.ResponseWriter, r *http.Request) error {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) error {
+	log.Info("Login")
 	var user models.User
 
 	err := json.NewDecoder(r.Body).Decode(&user)

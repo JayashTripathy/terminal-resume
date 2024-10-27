@@ -108,15 +108,15 @@ func (m model) View() string {
 	if !m.ready {
 		return "\n  Initializing..."
 	}
-	fmt.Printf("user %+v\n", m.user)
+	// fmt.Printf("user %+v\n", m.user)
 
-	var view string
+	// var view string
 
-	if(m.user != ""){
+	// if(m.user != ""){
 		view = fmt.Sprintf("%s\n%s\n%s", m.headerView(), m.viewport.View(), m.footerView())
-	}else{
-		view = "No user provided"
-	}
+	// }else{
+	// 	view = "No user provided"
+	// }
 	
 
 	return view

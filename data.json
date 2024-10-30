@@ -1,0 +1,370 @@
+{
+    "basics": {
+      "name": "Jayash Tripathy",
+      "headline": "Software Developer",
+      "email": "contact.jayash@gmail.com",
+      "phone": "+917389120420",
+      "location": "Gurgram, Haryana,  India",
+      "url": {
+        "label": "jayash.space",
+        "href": ""
+      },
+      "customFields": [],
+      "picture": {
+        "url": "",
+        "size": 66,
+        "aspectRatio": 1,
+        "borderRadius": 14,
+        "effects": {
+          "hidden": false,
+          "border": false,
+          "grayscale": false
+        }
+      }
+    },
+    "sections": {
+      "summary": {
+        "name": "About",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "summary",
+        "content": "I specialize in crafting scalable applications tailored to specific project needs. My proficiency spans the utilization of Websockets, Realtime Communications, and REST APIs, augmented by a deep understanding of frameworks like ReactJS and NextJS. This extensive expertise ensures the delivery of high-performance solutions that seamlessly address project requirements."
+      },
+      "awards": {
+        "name": "Awards",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": false,
+        "id": "awards",
+        "items": [
+          {
+            "id": "qp77cjsyfb5jpeu1xrqs0zwe",
+            "visible": true,
+            "title": "Kavach 2023",
+            "awarder": "Winner",
+            "date": "9 Aug 2023 ",
+            "summary": "",
+            "url": {
+              "label": "certificate",
+              "href": "https://drive.google.com/file/d/1-4yzE8cwkuaF6oSH35H7H6Q5fJmm-G3t/view?usp=sharing"
+            }
+          }
+        ]
+      },
+      "certifications": {
+        "name": "Certifications",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "certifications",
+        "items": []
+      },
+      "education": {
+        "name": "Education",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "education",
+        "items": [
+          {
+            "id": "z5yp2nl0hf6lru3860msj5hx",
+            "visible": true,
+            "institution": "Bhilai Institute Of Technology, Durg",
+            "studyType": "Bachelor of Technology",
+            "area": "Information Technology",
+            "score": "",
+            "date": "July 2020 - July 2024",
+            "summary": "",
+            "url": {
+              "label": "",
+              "href": ""
+            }
+          }
+        ]
+      },
+      "experience": {
+        "name": "Experience",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "experience",
+        "items": [
+          {
+            "id": "n50mfofl25klcydkj92a039h",
+            "visible": true,
+            "company": "Intozi",
+            "position": "Frontend Developer",
+            "location": "Gurugram ∙ On Site",
+            "date": "Feb 2024 - Present",
+            "summary": "Worked extensively with Websockets to stream data and videos in real time. Implemented client side api data caching, which enhanced data display by 60% Made the app 80% easier to navigate by completely rewriting the routing logic and integrating data persistence Created a data-heavy dashboard with a responsive layout and visually appealing live dynamic charts.",
+            "url": {
+              "label": "",
+              "href": ""
+            }
+          },
+          {
+            "id": "vhvw9bth76w9wyz2e67sdlwf",
+            "visible": true,
+            "company": "Writeroo",
+            "position": "React Developer",
+            "location": "Vadodra ∙ Remote",
+            "date": "June 2023 ∙ Sep 2023",
+            "summary": "Worked on the frontend for Writeroo's web and mobile cross-platform applications, which were built with NextJS and Ionic, respectively. Developed essential functional pages like notifications and search, developed clean layouts, and integrated mobile-friendly gesture support, reuseable components following best practices, and clean architecture utilising tools like TypeScript, React, NextJS, React Query, React Router, and Jotai.",
+            "url": {
+              "label": "writeroo.net",
+              "href": ""
+            }
+          }
+        ]
+      },
+      "volunteer": {
+        "name": "Volunteering",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "volunteer",
+        "items": []
+      },
+      "interests": {
+        "name": "Interests",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "interests",
+        "items": []
+      },
+      "languages": {
+        "name": "Languages",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "languages",
+        "items": []
+      },
+      "profiles": {
+        "name": "Profiles",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "profiles",
+        "items": [
+          {
+            "id": "dbbwjjhyvyl8p7i9s7j7uogn",
+            "visible": true,
+            "network": "LinkedIn",
+            "username": "linkedin.com/in/jayash-tripathy",
+            "icon": "linkedin",
+            "url": {
+              "label": "",
+              "href": "https://www.linkedin.com/in/jayash-tripathy/"
+            }
+          },
+          {
+            "id": "q0zcq7pjn7i7u29rfwzvblju",
+            "visible": true,
+            "network": "Github",
+            "username": "github.com/JayashTripathy",
+            "icon": "github",
+            "url": {
+              "label": "",
+              "href": "https://github.com/JayashTripathy"
+            }
+          },
+          {
+            "id": "bt28vj1l8x5cf7fj7rowv9sa",
+            "visible": true,
+            "network": "twitter",
+            "username": "twitter.com/jayash_tripathy",
+            "icon": "x",
+            "url": {
+              "label": "",
+              "href": "https://twitter.com/jayash_tripathy"
+            }
+          }
+        ]
+      },
+      "projects": {
+        "name": "Projects",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "projects",
+        "items": [
+          {
+            "id": "xn2sna7ckynxb0nkmfz7sk9o",
+            "visible": true,
+            "name": "MeshHawk",
+            "description": "winner project of kavach'23 ",
+            "date": "",
+            "summary": "Mesh-Hawk is a versatile, lightweight, and IoT-enabled tool designed for the detection and analysis of mesh networks. It empowers users to remotely scan specific areas, gather network details, and generate graphical maps of network components based on the collected evidence. Through its multi-stage operation, Mesh-Hawk provides invaluable insights into potential mesh networks and their attributes.",
+            "keywords": [],
+            "url": {
+              "label": "opinhacks.co/",
+              "href": ""
+            }
+          },
+          {
+            "id": "sxilh2j6kbqtvd6no828kaag",
+            "visible": true,
+            "name": "WiseFAQ",
+            "description": "",
+            "date": "",
+            "summary": "An no code AI-enabled FAQ page generator for any product, service, side project, or event that is completely customizable. Users can use it to create multiple FAQ pages, each with a different AI chatbot that is trained on the data provided when creating the page. I used Typescript, NextJS, and Supabase to store all the vector embedding and langchain for creating a custom AI agent.",
+            "keywords": [],
+            "url": {
+              "label": "wisefaq.vercel.app",
+              "href": "https://wisefaq.vercel.app/"
+            }
+          }
+        ]
+      },
+      "publications": {
+        "name": "Publications",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "publications",
+        "items": []
+      },
+      "references": {
+        "name": "References",
+        "columns": 1,
+        "separateLinks": true,
+        "visible": true,
+        "id": "references",
+        "items": []
+      },
+      "skills": {
+        "name": "Skills",
+        "columns": 5,
+        "separateLinks": true,
+        "visible": true,
+        "id": "skills",
+        "items": [
+          {
+            "id": "x8zcg2sx3f6sgt29xxo2fhgx",
+            "visible": true,
+            "name": "JavaSript ",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "o7gk9yksc0uiap68ni79z1yd",
+            "visible": true,
+            "name": "TypeScript",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "qyvcwon9xuk3zreafzvz2ym1",
+            "visible": true,
+            "name": "React",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "ykg6ajxv6qq1osc5hwuf3jvw",
+            "visible": true,
+            "name": "NextJS",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "s0zt90xq8svzbmp3s160ijme",
+            "visible": true,
+            "name": "React Router",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "zpxfecv5w67htxqg4i73lhvr",
+            "visible": true,
+            "name": "React Query",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "bg79al041zaqaaj87ndh5m0u",
+            "visible": true,
+            "name": "Node.js",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "b28i0s0w9xu1v9wfgoj26hu7",
+            "visible": true,
+            "name": "Express.js",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "z0drng77ufgcbdwd06q9v35e",
+            "visible": true,
+            "name": "Zod",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "kebojo2hrbqdnokofy2becub",
+            "visible": true,
+            "name": "Zustand",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "rb8701nfvtslf5wf0io70cof",
+            "visible": true,
+            "name": "Tauri",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "v82ctz7hgv9mikcyr74riwvq",
+            "visible": true,
+            "name": "Tailwind CSS",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "z3verpp7lyd7mjzsv47dtqon",
+            "visible": true,
+            "name": "HTML5/CSS3",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "ejmbqlerzi5pc0432qg48c7n",
+            "visible": true,
+            "name": "Ionic",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          },
+          {
+            "id": "mjxb61qtxwctkqi9p0zzi1vp",
+            "visible": true,
+            "name": "Tauri",
+            "description": "",
+            "level": 0,
+            "keywords": []
+          }
+        ]
+      },
+      "custom": {}
+    }
+   
+  }

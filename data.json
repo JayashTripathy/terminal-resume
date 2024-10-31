@@ -8,18 +8,6 @@
       "url": {
         "label": "jayash.space",
         "href": ""
-      },
-      "customFields": [],
-      "picture": {
-        "url": "",
-        "size": 66,
-        "aspectRatio": 1,
-        "borderRadius": 14,
-        "effects": {
-          "hidden": false,
-          "border": false,
-          "grayscale": false
-        }
       }
     },
     "sections": {
@@ -118,72 +106,6 @@
           }
         ]
       },
-      "volunteer": {
-        "name": "Volunteering",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "volunteer",
-        "items": []
-      },
-      "interests": {
-        "name": "Interests",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "interests",
-        "items": []
-      },
-      "languages": {
-        "name": "Languages",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "languages",
-        "items": []
-      },
-      "profiles": {
-        "name": "Profiles",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "profiles",
-        "items": [
-          {
-            "id": "dbbwjjhyvyl8p7i9s7j7uogn",
-            "visible": true,
-            "network": "LinkedIn",
-            "username": "linkedin.com/in/jayash-tripathy",
-            "icon": "linkedin",
-            "url": {
-              "label": "",
-              "href": "https://www.linkedin.com/in/jayash-tripathy/"
-            }
-          },
-          {
-            "id": "q0zcq7pjn7i7u29rfwzvblju",
-            "visible": true,
-            "network": "Github",
-            "username": "github.com/JayashTripathy",
-            "icon": "github",
-            "url": {
-              "label": "",
-              "href": "https://github.com/JayashTripathy"
-            }
-          },
-          {
-            "id": "bt28vj1l8x5cf7fj7rowv9sa",
-            "visible": true,
-            "network": "twitter",
-            "username": "twitter.com/jayash_tripathy",
-            "icon": "x",
-            "url": {
-              "label": "",
-              "href": "https://twitter.com/jayash_tripathy"
-            }
-          }
-        ]
-      },
       "projects": {
         "name": "Projects",
         "columns": 1,
@@ -218,22 +140,6 @@
             }
           }
         ]
-      },
-      "publications": {
-        "name": "Publications",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "publications",
-        "items": []
-      },
-      "references": {
-        "name": "References",
-        "columns": 1,
-        "separateLinks": true,
-        "visible": true,
-        "id": "references",
-        "items": []
       },
       "skills": {
         "name": "Skills",

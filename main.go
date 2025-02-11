@@ -47,11 +47,11 @@ import (
 			os.Exit(1)
 		}
 
-		err = extractUsername(s, &username)
+		// err = extractUsername(s, &username)
 
-		if err != nil {
-			log.Warn(err)
-		}
+		// if err != nil {
+		// 	log.Warn(err)
+		// }
 
 		log.Info("Username is " + username)
 

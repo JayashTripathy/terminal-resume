@@ -30,6 +30,7 @@ RUN wget https://golang.org/dl/go${GOVERSION}.linux-amd64.tar.gz \
 ENV PATH=/usr/local/go/bin:${PATH}
 ENV GOPATH=/root/go
 ENV PATH=${GOPATH}/bin:${PATH}
+ENV TERM=xterm-256color
 
 WORKDIR /root/app
 
